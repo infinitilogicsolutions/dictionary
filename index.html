@@ -1,0 +1,37 @@
+<!doctype html><html lang="en"><head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <meta name="theme-color" content="#f7f7f2"> <meta name="description" content="A little curiosity goes a long way. Explore the English language with Infiniti Dictionary, powered by Princeton WordNet."> <title>Infiniti Dictionary — Follow your curiosity</title> <style>body {
+        margin: 0;
+        background: #f7f7f2;
+      }
+      infiniti-dictionary:not(.hydrated) {
+        display: block;
+        min-height: 100vh;
+      }
+      .harness-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        border-bottom: 1px solid #d8d8ce;
+        font: 14px system-ui, sans-serif;
+      }
+      .harness-controls select { padding: 6px 10px; font: inherit; }</style> <script type="module" src="./build/infiniti-dictionary.esm.js"></script> </head> <body> <div class="harness-controls"> <label for="dictionary-view">Dictionary view</label> <select id="dictionary-view"> <option value="full">Full version</option> <option value="mini">Mini version</option> </select> </div> <infiniti-dictionary></infiniti-dictionary> <script>
+      const dictionary = document.querySelector("infiniti-dictionary");
+      const view = document.querySelector("#dictionary-view");
+      const initialMini = new URL(location.href).searchParams.get("view") === "mini";
+      view.value = initialMini ? "mini" : "full";
+      dictionary.toggleAttribute("mini", initialMini);
+      view.addEventListener("change", () => {
+        const mini = view.value === "mini";
+        dictionary.mini = mini;
+        dictionary.toggleAttribute("mini", mini);
+        const url = new URL(location.href);
+        if (mini) url.searchParams.set("view", "mini");
+        else url.searchParams.delete("view");
+        history.replaceState(null, "", url);
+      });
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () =>
+          navigator.serviceWorker.register("./sw.js").catch(() => {}),
+        );
+      }
+    </script> </body></html>
