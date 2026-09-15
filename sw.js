@@ -1,6 +1,6 @@
 
-const CACHE = 'infiniti-shell-1b089d6762b6d672';
-const ASSETS = ["assets/duckdb-browser-eh.worker.js","assets/duckdb-eh.wasm","build/index.esm.js","build/infiniti-dictionary.esm.js","build/infiniti-dictionary.js","build/p-32aa6c9f.entry.js","build/p-CklX5qcf.js","build/p-DQuL1Twl.js","index.html"];
+const CACHE = 'infiniti-shell-c203750faefcbada';
+const ASSETS = ["assets/duckdb-browser-eh.worker.js","assets/duckdb-eh.wasm","build/index.esm.js","build/infiniti-dictionary.esm.js","build/infiniti-dictionary.js","build/p-CklX5qcf.js","build/p-DQuL1Twl.js","build/p-de0da130.entry.js","index.html"];
 self.addEventListener('install', event => event.waitUntil(
   caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
 ));
