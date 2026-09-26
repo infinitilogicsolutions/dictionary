@@ -1,6 +1,6 @@
 
-const CACHE = 'infiniti-shell-540760d26e50237a';
-const ASSETS = ["assets/duckdb-browser-eh.worker.js","assets/duckdb-eh.wasm","build/index.esm.js","build/infiniti-dictionary.esm.js","build/infiniti-dictionary.js","build/p-CklX5qcf.js","build/p-DQuL1Twl.js","build/p-a2f98dc1.entry.js","index.html"];
+const CACHE = 'infiniti-shell-d2f9b50443ad68ee';
+const ASSETS = ["assets/duckdb-browser-eh.worker.js","assets/duckdb-eh.wasm","build/index.esm.js","build/infiniti-dictionary.esm.js","build/infiniti-dictionary.js","build/p-8db63ca4.entry.js","build/p-CklX5qcf.js","build/p-DQuL1Twl.js","index.html"];
 self.addEventListener('install', event => event.waitUntil(
   caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
 ));
@@ -25,6 +25,18 @@ self.addEventListener('fetch', event => {
   if (!ASSETS.includes(relative) && relative !== '') return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    return await cache.match(relative || 'index.html') || fetch(request);
+    const key = relative || 'index.html';
+    // Fetch app code first so a refresh can load a newly published build.
+    // Other assets stay cache-first, and all assets remain available offline.
+    if (key === 'index.html' || key.startsWith('build/')) {
+      try {
+        const response = await fetch(request, { cache: 'no-store' });
+        if (response.ok) {
+          await cache.put(key, response.clone()).catch(() => undefined);
+          return response;
+        }
+      } catch {}
+    }
+    return await cache.match(key) || fetch(request);
   })());
 });
